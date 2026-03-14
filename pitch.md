@@ -11,7 +11,7 @@
 
 "Right now, learning to code is broken. If you use a traditional platform like Codecademy or LeetCode, it’s a one-size-fits-all approach. Every student gets the exact same questions, in the exact same order."
 
-"But what if a student perfectly understands 'loops' but is completely stuck on 'array boundaries'? A static platform doesn't know that. It just pushes them to the next chapter. The student gets frustrated, they lose confidence, and ultimately... they quit. In fact, online coding courses have an average drop-out rate of over 85%."
+"But what if a student perfectly understands 'loops' but is completely stuck on 'array boundaries'? A static platform doesn't know that. It just pushes them to the next chapter. The student gets frustrated, they lose confidence, and ultimately... they quit. In fact, studies by MIT and Harvard on online courses have shown an average drop-out rate of over 85%."
 
 "We built **CodeSensei** to fix that."
 
