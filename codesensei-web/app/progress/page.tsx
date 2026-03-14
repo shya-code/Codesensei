@@ -34,7 +34,8 @@ export default function ProgressPage() {
 
   if (!weakness) return <div style={{ padding: "2rem" }}>Loading...</div>;
 
-  const astPatternMax = Math.max(1, ...Object.values(weakness.astPatternFailures ?? {}));
+  const astValues = Object.values(weakness.astPatternFailures ?? {}) as number[];
+  const astPatternMax = Math.max(1, ...astValues);
 
   // Heatmap generation: Last 90 days
   const heatmapDays = [];
