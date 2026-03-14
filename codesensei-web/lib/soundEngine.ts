@@ -75,33 +75,7 @@ export function playSuccess(): void {
 
 export function playHint(): void {
   if (!isSoundEnabled()) return;
-  const ctx = getCtx();
-  if (!ctx) return;
-
-  // "YEAH BOI" = punchy ascending 5-note riff
-  const notes = [
-    { freq: 220, t: 0,    dur: 0.1 },  // yeah
-    { freq: 277, t: 0.1,  dur: 0.08 }, // ye-
-    { freq: 330, t: 0.18, dur: 0.08 }, // -ah
-    { freq: 392, t: 0.27, dur: 0.06 }, // BOI
-    { freq: 523, t: 0.34, dur: 0.22 }, // ~ ↑ big finish
-  ];
-
-  notes.forEach(({ freq, t, dur }) => {
-    const osc = ctx.createOscillator();
-    osc.type = "square";
-    osc.frequency.value = freq;
-
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0, ctx.currentTime + t);
-    g.gain.linearRampToValueAtTime(0.3, ctx.currentTime + t + 0.01);
-    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + dur);
-
-    osc.connect(g);
-    g.connect(ctx.destination);
-    osc.start(ctx.currentTime + t);
-    osc.stop(ctx.currentTime + t + dur + 0.05);
-  });
-
-  setTimeout(() => ctx.close(), 1500);
+  const audio = new Audio("/sounds/level_sabke_niklenge.mp3");
+  audio.volume = 0.6; 
+  audio.play().catch(() => { /* ignore auto-play policies if they block it */ });
 }
