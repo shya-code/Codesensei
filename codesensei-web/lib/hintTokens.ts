@@ -1,8 +1,8 @@
 // lib/hintTokens.ts
 // Daily hint token economy. 3 tokens per day, refill at midnight.
 
-const KEY = "cs_hint_tokens";
-const DAILY_TOKENS = 3;
+const KEY = "cs_hint_tokens_v2";
+const DAILY_TOKENS = 30;
 
 interface HintTokenState {
   count: number;

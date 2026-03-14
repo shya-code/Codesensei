@@ -58,7 +58,7 @@ export const COMBO_THRESHOLD = 3;
 export const COMBO_MULTIPLIER = 1.5;
 
 // Feature 7: Hint Token Economy
-export const DAILY_HINT_TOKENS = 3;
+export const DAILY_HINT_TOKENS = 30;
 
 // Feature 1: Daily Challenge
 export const DAILY_BONUS_MULTIPLIER = 2;
