@@ -20,12 +20,28 @@ export async function POST(request: Request): Promise<Response> {
     const prompt = taskPrompt({ topic, level, completedTopics });
 
     const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-    const streamResponse = await groq.chat.completions.create({
-      model: GROQ_MODEL,
-      messages: [{ role: "user", content: prompt }],
-      stream: true,
-      max_tokens: MAX_TOKENS,
-    });
+    
+    let streamResponse;
+    try {
+      streamResponse = await groq.chat.completions.create({
+        model: GROQ_MODEL,
+        messages: [{ role: "user", content: prompt }],
+        stream: true,
+        max_tokens: MAX_TOKENS,
+      });
+    } catch (error: any) {
+      if (error?.status === 429) {
+        console.warn("[/api/task] Rate limit hit on 70b, falling back to llama-3.1-8b-instant");
+        streamResponse = await groq.chat.completions.create({
+          model: "llama-3.1-8b-instant",
+          messages: [{ role: "user", content: prompt }],
+          stream: true,
+          max_tokens: MAX_TOKENS,
+        });
+      } else {
+        throw error;
+      }
+    }
 
     const stream = new ReadableStream({
       async start(controller) {

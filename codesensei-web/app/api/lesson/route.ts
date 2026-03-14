@@ -85,13 +85,29 @@ export async function POST(request: Request): Promise<Response> {
     // ── 2. AI fallback (only when no static file exists) ──────
     const prompt = lessonPrompt({ topic, level, weaknessPatterns });
     const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-    const streamResponse = await groq.chat.completions.create({
-      model: GROQ_MODEL,
-      messages: [{ role: "user", content: prompt }],
-      stream: true,
-      max_tokens: 1500,
-      temperature: 0.7,
-    });
+    let streamResponse;
+    try {
+      streamResponse = await groq.chat.completions.create({
+        model: GROQ_MODEL,
+        messages: [{ role: "user", content: prompt }],
+        stream: true,
+        max_tokens: 1500,
+        temperature: 0.7,
+      });
+    } catch (e: any) {
+      if (e?.status === 429) {
+        console.warn("[/api/lesson] Rate limit hit on 70b, falling back to llama-3.1-8b-instant");
+        streamResponse = await groq.chat.completions.create({
+          model: "llama-3.1-8b-instant",
+          messages: [{ role: "user", content: prompt }],
+          stream: true,
+          max_tokens: 1500,
+          temperature: 0.7,
+        });
+      } else {
+        throw e;
+      }
+    }
 
     const stream = new ReadableStream({
       async start(controller) {

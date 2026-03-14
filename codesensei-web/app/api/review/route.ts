@@ -28,12 +28,27 @@ export async function POST(request: Request): Promise<Response> {
       async start(controller) {
         const encoder = new TextEncoder();
         try {
-          const streamResponse = await groq.chat.completions.create({
-            model: GROQ_MODEL,
-            messages: [{ role: "user", content: prompt }],
-            stream: true,
-            max_tokens: MAX_TOKENS,
-          });
+          let streamResponse;
+          try {
+            streamResponse = await groq.chat.completions.create({
+              model: GROQ_MODEL,
+              messages: [{ role: "user", content: prompt }],
+              stream: true,
+              max_tokens: MAX_TOKENS,
+            });
+          } catch (e: any) {
+             if (e?.status === 429) {
+               console.warn("[/api/review] Rate limit hit on 70b, falling back to llama-3.1-8b-instant");
+               streamResponse = await groq.chat.completions.create({
+                 model: "llama-3.1-8b-instant",
+                 messages: [{ role: "user", content: prompt }],
+                 stream: true,
+                 max_tokens: MAX_TOKENS,
+               });
+             } else {
+               throw e;
+             }
+          }
           for await (const chunk of streamResponse) {
             const content = chunk.choices[0]?.delta?.content ?? "";
             if (content) {
